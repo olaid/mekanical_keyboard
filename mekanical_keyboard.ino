@@ -61,8 +61,6 @@ void loop()
   }
 }
 
-
-
 void AE_HX711_Init(void)
 {
   //Serial.println("init");
@@ -110,7 +108,6 @@ long AE_HX711_Read(int pin)
   return data^0x800000; 
 }
 
-
 long AE_HX711_Averaging(char num,int pin)
 {
   //Serial.println("averaging");
@@ -122,10 +119,14 @@ long AE_HX711_Averaging(char num,int pin)
 void AE_HX711_getGram(char num)
 {
   //Serial.println("getGram");
+// Power Supply Options registor
   #define HX711_R1  20000.0f
-  #define HX711_R2  8200.0f
+  // Value Correction #define HX711_R2  8200.0f
+  #define HX711_R2  3200.0f
+// Reference bypass
   #define HX711_VBG 1.25f
-  #define HX711_AVDD      4.2987f//(HX711_VBG*((HX711_R1+HX711_R2)/HX711_R2))
+  // Value Correction #define HX711_AVDD      4.2987f//(HX711_VBG*((HX711_R1+HX711_R2)/HX711_R2))
+  #define HX711_AVDD      9.0625kf//(HX711_VBG*((HX711_R1+HX711_R2)/HX711_R2))
   #define HX711_ADC1bit   HX711_AVDD/16777216 //16777216=(2^24)
   #define HX711_PGA 128
   #define HX711_SCALE     (OUT_VOL * HX711_AVDD / LOAD *HX711_PGA)
