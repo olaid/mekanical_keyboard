@@ -62,7 +62,7 @@ void loop()
   AE_HX711_getGram(5);
   Serial.println("result");
   for(int pin = 0 ; pin < CELLS ; pin++){
-    sprintf(S1,"No.%d %s g",pin,dtostrf((fgr_data[pin]-offset[pin]), 5, 3, s));
+    sprintf(S1,"No.%d %d g",pin,(int)(fgr_data[pin]-offset[pin]));
     Serial.println(S1);
   }
 }
@@ -100,7 +100,7 @@ void AE_HX711_Read()
       digitalWrite(pin_slk[pin],1);
     delayMicroseconds(5);
     for (int pin = 0; pin < CELLS; pin ++)
-      digitalWrite(pin_slk[pin ],0);
+      digitalWrite(pin_slk[pin],0);
     delayMicroseconds(5);
     for (int pin = 0; pin < CELLS; pin++)
       data[pin] = (data[pin]<<1)|(digitalRead(pin_dout[pin]));
@@ -120,9 +120,8 @@ void AE_HX711_Averaging(char num)
 {
   //Serial.println("averaging");
   long sum[CELLS];
-  long result[CELLS];
   for (int pin = 0; pin < CELLS; pin++)
-    sun[pin] = 0;
+    sum[pin] = 0;
   for (int i = 0; i < num; i++) {
      AE_HX711_Read();
      for (int pin = 0; pin < CELLS; pin++) {
@@ -130,7 +129,7 @@ void AE_HX711_Averaging(char num)
      }
   }
   for (int pin = 0; pin < CELLS; pin++)
-    fgr_data[pin] = sun[pin] / num ;
+    fgr_data[pin] = sum[pin] / num ;
 }
 
 void AE_HX711_getGram(char num)
@@ -138,12 +137,10 @@ void AE_HX711_getGram(char num)
   //Serial.println("getGram");
 // Power Supply Options registor
   #define HX711_R1  20000.0f
-  // Value Correction #define HX711_R2  8200.0f
-  #define HX711_R2  3200.0f
+  #define HX711_R2  8200.0f
 // Reference bypass
   #define HX711_VBG 1.25f
-  // Value Correction #define HX711_AVDD      4.2987f//(HX711_VBG*((HX711_R1+HX711_R2)/HX711_R2))
-  #define HX711_AVDD      9.0625kf//(HX711_VBG*((HX711_R1+HX711_R2)/HX711_R2))
+  #define HX711_AVDD      4.2987f//(HX711_VBG*((HX711_R1+HX711_R2)/HX711_R2))
   #define HX711_ADC1bit   HX711_AVDD/16777216 //16777216=(2^24)
   #define HX711_PGA 128
   #define HX711_SCALE     (OUT_VOL * HX711_AVDD / LOAD *HX711_PGA)
